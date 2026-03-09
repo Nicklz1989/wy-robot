@@ -1,15 +1,18 @@
-import { supabaseAdmin } from '@/lib/supabase';
 import type { Admin, LoginRequest } from '@/types';
 
-// 使用明文密码验证（部署环境兼容性更好）
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'Nicklz';
+// 硬编码管理员账号（确保部署环境可用）
+const ADMIN_USERNAME = 'Nicklz';
 const ADMIN_PASSWORD = 'Nicklz123';
 
 export async function verifyLogin(credentials: LoginRequest): Promise<Admin | null> {
-  console.log('Attempting login:', credentials.username);
-  console.log('Expected username:', ADMIN_USERNAME);
-  console.log('Expected password:', ADMIN_PASSWORD);
-  console.log('Input password:', credentials.password);
+  console.log('Login attempt:', { 
+    inputUsername: credentials.username, 
+    inputPassword: credentials.password,
+    expectedUsername: ADMIN_USERNAME,
+    expectedPassword: ADMIN_PASSWORD,
+    usernameMatch: credentials.username === ADMIN_USERNAME,
+    passwordMatch: credentials.password === ADMIN_PASSWORD
+  });
 
   // 简单的明文密码验证
   if (credentials.username === ADMIN_USERNAME && credentials.password === ADMIN_PASSWORD) {
@@ -22,7 +25,7 @@ export async function verifyLogin(credentials: LoginRequest): Promise<Admin | nu
     };
   }
 
-  console.log('Login failed');
+  console.log('Login failed: credentials mismatch');
   return null;
 }
 
@@ -30,7 +33,6 @@ export async function changePassword(
   username: string,
   newPassword: string
 ): Promise<void> {
-  // 暂不支持在线修改密码，需要在环境变量中修改
   throw new Error('密码修改功能暂不可用，请联系管理员');
 }
 
